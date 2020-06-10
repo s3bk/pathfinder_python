@@ -48,10 +48,13 @@ def clock():
         ctx.restore()
     
     (tm_year,tm_mon,tm_mday,tm_hour,tm_min,tm_sec,tm_wday,tm_yday,tm_isdst) = time.localtime()
+    seconds = tm_sec
+    minutes = tm_min + seconds / 60
+    hours = tm_hour + minutes / 60
     hands = [
-        (tm_hour * pi / 6, 14, 5, color_hour),
-        (tm_min * pi / 30, 16, 4, color_minute),
-        (tm_sec * pi / 30, 18, 3, color_second)
+        (hours * pi / 6, 14, 5, color_hour),
+        (minutes * pi / 30, 16, 4, color_minute),
+        (seconds * pi / 30, 18, 3, color_second)
     ]
     for (angle, len, width, color) in hands:
         ctx.save()

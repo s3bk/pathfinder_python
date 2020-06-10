@@ -4,11 +4,12 @@ from math import sin, cos, pi
 
 rgba = Color.rgba
 
-s = Scene(Rect((0, 0), (100, 100)))
+s = Scene()
+s.view_box = Rect((0, 0), (100, 100))
 
 bg = rgba(0.5, 1.0, 1.0, 1.0)
 
-w = show(s) #, "d3d11", bg)
+w = show(s, background=bg) #, "d3d11", bg)
 
 t0 = time.time()
 
