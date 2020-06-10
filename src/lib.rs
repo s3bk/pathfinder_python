@@ -117,9 +117,9 @@ pub fn show(_py: Python, scene: Scene, zoom: bool, pan: bool, level: &str, backg
 }
 */
 
-#[pyfunction]
-fn show(_py: Python, scene: AutoScene, zoom: bool, pan: bool) -> PyResult<Window> {
-    Ok(Window::new(scene, Config { zoom, pan }))
+#[pyfunction(scene, zoom="true", pan="true", transparent="false", borders="true", background="Color::white()")]
+fn show(_py: Python, scene: AutoScene, zoom: bool, pan: bool, transparent: bool, borders: bool, background: Color) -> PyResult<Window> {
+    Ok(Window::new(scene, Config { zoom, pan, transparent, borders, background: background.color_f() }))
 }
 
 #[derive(Debug)]

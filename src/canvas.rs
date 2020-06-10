@@ -79,13 +79,12 @@ impl Canvas {
     }
 
     #[getter]
-    pub fn get_line_width(&self) -> PyResult<f32> {
-        Ok(self.inner.line_width())
+    pub fn get_line_width(&self) -> f32 {
+        self.inner.line_width()
     }
     #[setter]
-    pub fn set_line_width(&mut self, new_line_width: f32) -> PyResult<()> {
+    pub fn set_line_width(&mut self, new_line_width: f32) {
         self.inner.set_line_width(new_line_width);
-        Ok(())
     }
 /*
     #[getter]
@@ -114,79 +113,68 @@ impl Canvas {
     */
 
     #[getter]
-    pub fn get_miter_limit(&self) -> PyResult<f32> {
-        Ok(self.inner.miter_limit())
+    pub fn get_miter_limit(&self) -> f32 {
+        self.inner.miter_limit()
     }
     #[setter]
-    pub fn set_miter_limit(&mut self, new_miter_limit: f32) -> PyResult<()> {
+    pub fn set_miter_limit(&mut self, new_miter_limit: f32) {
         self.inner.set_miter_limit(new_miter_limit);
-        Ok(())
     }
 
     #[getter]
-    pub fn get_line_dash(&self) -> PyResult<Vec<f32>> {
-        Ok(self.inner.line_dash().to_owned())
+    pub fn get_line_dash(&self) -> Vec<f32> {
+        self.inner.line_dash().to_owned()
     }
     #[setter]
-    pub fn set_line_dash(&mut self, new_line_dash: Vec<f32>) -> PyResult<()> {
+    pub fn set_line_dash(&mut self, new_line_dash: Vec<f32>) {
         self.inner.set_line_dash(new_line_dash);
-        Ok(())
     }
 
     #[getter]
-    pub fn get_line_dash_offset(&self) -> PyResult<f32> {
-        Ok(self.inner.line_dash_offset())
+    pub fn get_line_dash_offset(&self) -> f32 {
+        self.inner.line_dash_offset()
     }
     #[setter]
-    pub fn set_line_dash_offset(&mut self, new_line_dash_offset: f32) -> PyResult<()> {
+    pub fn set_line_dash_offset(&mut self, new_line_dash_offset: f32) {
         self.inner.set_line_dash_offset(new_line_dash_offset);
-        Ok(())
     }
 
     #[setter]
-    pub fn set_fill_style(&mut self, new_fill_style: AutoFillStyle) -> PyResult<()> {
+    pub fn set_fill_style(&mut self, new_fill_style: AutoFillStyle) {
         self.inner.set_fill_style(new_fill_style.0);
-        Ok(())
     }
 
     #[setter]
-    pub fn set_stroke_style(&mut self, new_stroke_style: AutoFillStyle) -> PyResult<()> {
+    pub fn set_stroke_style(&mut self, new_stroke_style: AutoFillStyle) {
         self.inner.set_stroke_style(new_stroke_style.0);
-        Ok(())
     }
 
     #[getter]
-    pub fn get_shadow_blur(&self) -> PyResult<f32> {
-        Ok(self.inner.shadow_blur())
+    pub fn get_shadow_blur(&self) -> f32 {
+        self.inner.shadow_blur()
     }
     #[setter]
-    pub fn set_shadow_blur(&mut self, new_shadow_blur: f32) -> PyResult<()> {
+    pub fn set_shadow_blur(&mut self, new_shadow_blur: f32) {
         self.inner.set_shadow_blur(new_shadow_blur);
-        Ok(())
     }
 
 
     #[getter]
-    pub fn get_shadow_colort(&self) -> PyResult<Color> {
-        Ok(Color::from(self.inner.shadow_color()))
+    pub fn get_shadow_colort(&self) -> Color {
+        Color::from(self.inner.shadow_color())
     }
     #[setter]
-    pub fn set_shadow_color(&mut self, new_shadow_color: Color) -> PyResult<()> {
-        self.inner
-        .set_shadow_color(new_shadow_color.color_u());
-        Ok(())
+    pub fn set_shadow_color(&mut self, new_shadow_color: Color) {
+        self.inner.set_shadow_color(new_shadow_color.color_u());
     }
 
     #[getter]
-    pub fn get_shadow_offset(&self) -> PyResult<Vector> {
-        Ok(Vector::from(self.inner
-            .shadow_offset()))
+    pub fn get_shadow_offset(&self) -> Vector {
+        Vector::from(self.inner.shadow_offset())
     }
     #[setter]
-    pub fn set_shadow_offset(&mut self, new_shadow_offset: AutoVector) -> PyResult<()> {
-        self.inner
-        .set_shadow_offset(*new_shadow_offset);
-        Ok(())
+    pub fn set_shadow_offset(&mut self, new_shadow_offset: AutoVector) {
+        self.inner.set_shadow_offset(*new_shadow_offset);
     }
 }
 

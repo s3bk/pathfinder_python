@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 mod pa {
     pub use pathfinder_renderer::scene::{Scene, DrawPath};
 }
-use crate::{AutoPaint, Path};
+use crate::{AutoPaint, Path, Rect};
 
 wrap!(Scene, pa::Scene);
 
@@ -12,6 +12,15 @@ impl Scene {
     #[new]
     pub fn new() -> Scene {
         pa::Scene::new().into()
+    }
+
+    #[getter]
+    pub fn get_view_box(&self) -> Rect {
+        self.inner.view_box().into()
+    }
+    #[setter]
+    pub fn set_view_box(&mut self, r: Rect) {
+        self.inner.set_view_box(r.into())
     }
 
     #[text_signature = "($self, path: Path)"]

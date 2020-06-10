@@ -24,11 +24,18 @@ impl Color {
         let (r, g, b, a) = self.rgba;
         ColorF::new(r, g, b, a)
     }
+    pub fn white() -> Color {
+        ColorF::white().into()
+    }
 }
 
 impl From<ColorU> for Color {
     fn from(color: ColorU) -> Self {
-        let c = color.to_f32();
+        color.to_f32().into()
+    }
+}
+impl From<ColorF> for Color {
+    fn from(c: ColorF) -> Self {
         Color {
             rgba: (c.r(), c.g(), c.b(), c.a())
         }

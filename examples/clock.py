@@ -62,7 +62,7 @@ def clock():
 
     return ctx
 
-w = show(clock(), True, False) #, "d3d11", bg)
+w = show(clock(), True, False, True, False, Color.rgba(0,0,0,0)) #, "d3d11", bg)
 while True:
     w.update(clock())
     time.sleep(1)
