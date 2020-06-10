@@ -1,0 +1,35 @@
+[package]
+name = "pathfinder_python"
+version = "0.1.0"
+authors = ["Sebastian K <s3bk@protonmail.com>"]
+edition = "2018"
+
+[lib]
+name = "pathfinder"
+crate-type = ["cdylib"]
+
+[dependencies.pyo3]
+version = "0.10.1"
+features = ["extension-module"]
+
+[dependencies]
+pathfinder_geometry = { git = "https://github.com/s3bk/pathfinder" }
+pathfinder_content = { git = "https://github.com/s3bk/pathfinder" }
+pathfinder_color = { git = "https://github.com/s3bk/pathfinder" }
+pathfinder_canvas = { git = "https://github.com/s3bk/pathfinder" }
+pathfinder_renderer = { git = "https://github.com/s3bk/pathfinder" }
+pathfinder_view = { path = "../pathfinder_view" }
+
+[patch."https://github.com/s3bk/pathfinder"]
+pathfinder_gl = { path = "../pathfinder/gl"}
+pathfinder_webgl = { path = "../pathfinder/webgl"}
+pathfinder_gpu = { path = "../pathfinder/gpu"}
+pathfinder_content = { path = "../pathfinder/content"}
+pathfinder_color = { path = "../pathfinder/color"}
+pathfinder_canvas = { path = "../pathfinder/canvas"}
+pathfinder_geometry = { path = "../pathfinder/geometry"}
+pathfinder_renderer = { path = "../pathfinder/renderer"}
+pathfinder_resources = { path = "../pathfinder/resources"}
+pathfinder_simd = { path = "../pathfinder/simd"}
+pathfinder_svg = { path = "../pathfinder/svg"}
+pathfinder_export = { path = "../pathfinder/export"}
