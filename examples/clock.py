@@ -29,12 +29,13 @@ color_second = Color.rgba(0.7, 0, 0.5, 1.0)
 
 
 def clock():
-    ctx = Canvas((200, 200))
-    ctx.translate((100, 100))
+    ctx = Canvas((40, 40))
+    ctx.translate((20, 20))
     ctx.fill_style = Color.rgba(0.9, 0.85, 0.8, 0.75)
     ctx.stroke_style = Color.rgba(0,0,0,1)
-    
-    c = circle(80)
+    ctx.line_width = 0.5
+
+    c = circle(19)
     ctx.fill_path(c, "winding")
     ctx.stroke_path(c)
 
@@ -42,15 +43,15 @@ def clock():
     for h in range(12):
         ctx.save()
         ctx.rotate(h / 6 * pi)
-        ctx.translate((-80, 0))
-        ctx.fill_path(tick(10, 2), "winding")
+        ctx.translate((-19, 0))
+        ctx.fill_path(tick(2, 0.5), "winding")
         ctx.restore()
     
     (tm_year,tm_mon,tm_mday,tm_hour,tm_min,tm_sec,tm_wday,tm_yday,tm_isdst) = time.localtime()
     hands = [
-        (tm_hour * pi / 6, 50, 10, color_hour),
-        (tm_min * pi / 30, 60, 8, color_minute),
-        (tm_sec * pi / 30, 70, 5, color_second)
+        (tm_hour * pi / 6, 14, 5, color_hour),
+        (tm_min * pi / 30, 16, 4, color_minute),
+        (tm_sec * pi / 30, 18, 3, color_second)
     ]
     for (angle, len, width, color) in hands:
         ctx.save()
@@ -61,7 +62,7 @@ def clock():
 
     return ctx
 
-w = show(clock(), True, True) #, "d3d11", bg)
+w = show(clock(), True, False) #, "d3d11", bg)
 while True:
     w.update(clock())
     time.sleep(1)
