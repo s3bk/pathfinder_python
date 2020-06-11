@@ -26,14 +26,18 @@ color_hour = Color.rgba(0.5, 0, 0.8, 1.0)
 color_minute = Color.rgba(0.6, 0, 0.6, 1.0)
 color_second = Color.rgba(0.7, 0, 0.5, 1.0)
 
+font = FontCollection.from_fonts([Font.from_file("/usr/share/fonts/truetype/noto/NotoSerif-Regular.ttf")])
 
 
 def clock():
     ctx = Canvas((40, 40))
+    ctx.font = font
+    ctx.font_size = 4
     ctx.translate((20, 20))
     ctx.fill_style = Color.rgba(0.9, 0.85, 0.8, 0.75)
     ctx.stroke_style = Color.rgba(0,0,0,1)
     ctx.line_width = 0.5
+    ctx.text_align = "center"
 
     c = circle(19)
     ctx.fill_path(c, "winding")
@@ -46,7 +50,9 @@ def clock():
         ctx.translate((-19, 0))
         ctx.fill_path(tick(2, 0.5), "winding")
         ctx.restore()
-    
+
+    ctx.fill_text("Hello Pathfinder", (0, -5))
+
     (tm_year,tm_mon,tm_mday,tm_hour,tm_min,tm_sec,tm_wday,tm_yday,tm_isdst) = time.localtime()
     seconds = tm_sec
     minutes = tm_min + seconds / 60
@@ -62,6 +68,7 @@ def clock():
         ctx.rotate(angle - pi/2)
         ctx.fill_path(indicator(len, width), "winding")
         ctx.restore()
+    
 
     return ctx
 

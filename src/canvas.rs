@@ -1,7 +1,10 @@
 use pyo3::prelude::*;
-use pyo3::wrap_pyfunction;
 mod pa {
-    pub use pathfinder_canvas::{Canvas, CanvasRenderingContext2D, Path2D, FillStyle, FillRule, CanvasFontContext};
+    pub use pathfinder_canvas::{
+        Canvas, CanvasRenderingContext2D, Path2D,
+        FillStyle, FillRule, CanvasFontContext, FontCollection,
+        TextAlign, TextBaseline, TextMetrics,
+    };
     pub use pathfinder_geometry::{
         vector::Vector2F,
         rect::RectF,
@@ -11,7 +14,9 @@ mod pa {
         outline::ArcDirection,
     };
 }
-use crate::{Rect, Vector, Path, AutoScale, AutoVector, Transform, Color};
+use crate::{Rect, Vector, Path, AutoScale, AutoVector, Transform, Color, FontCollection, AutoFontCollection};
+
+use std::sync::Arc;
 
 wrap!(Canvas, pa::CanvasRenderingContext2D);
 
@@ -19,7 +24,7 @@ wrap!(Canvas, pa::CanvasRenderingContext2D);
 impl Canvas {
     #[new]
     pub fn new(size: AutoVector) -> Canvas {
-        pa::Canvas::new(*size).get_context_2d(pa::CanvasFontContext::from_system_source()).into()
+        pa::Canvas::new(*size).get_context_2d(pa::CanvasFontContext::new(Arc::new(pa::FontCollection::new()))).into()
     }
 
     pub fn save(&mut self) {
@@ -175,6 +180,48 @@ impl Canvas {
     #[setter]
     pub fn set_shadow_offset(&mut self, new_shadow_offset: AutoVector) {
         self.inner.set_shadow_offset(*new_shadow_offset);
+    }
+}
+
+// Text
+#[pymethods]
+impl Canvas {
+    pub fn fill_text(&mut self, string: &str, position: AutoVector) {
+        self.inner.fill_text(string, *position);
+    }
+
+    pub fn stroke_text(&mut self, string: &str, position: AutoVector) {
+        self.inner.stroke_text(string, *position);
+    }
+
+    #[getter]
+    pub fn get_font_size(&self) -> f32 {
+        self.inner.font_size()
+    }
+    #[setter]
+    pub fn set_font_size(&mut self, font_size: f32) {
+        self.inner.set_font_size(font_size)
+    }
+  
+    #[getter]
+    pub fn get_font(&self) -> FontCollection {
+        (*self.inner.font()).clone().into()
+    }
+    #[setter]
+    pub fn set_font(&mut self, font_collection: AutoFontCollection) {
+        self.inner.set_font(font_collection.into_inner());
+    }
+
+    #[setter]
+    pub fn set_text_align(&mut self, align: &str) -> PyResult<()> {
+        let align = match align {
+            "left" => pa::TextAlign::Left,
+            "center"=> pa::TextAlign::Center,
+            "right" => pa::TextAlign::Right,
+            _ => return Err(value_error!("('left' | 'center' | 'right')")),
+        };
+        self.inner.set_text_align(align);
+        Ok(())
     }
 }
 

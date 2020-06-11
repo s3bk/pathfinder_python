@@ -7,7 +7,6 @@ use pathfinder_geometry::{
 
 wrap!(Vector, Vector2F);
 
-
 #[pymethods]
 impl Vector {
     #[new]
@@ -16,29 +15,16 @@ impl Vector {
     }
 }
 
-auto!(AutoVector(Vector2F));
-impl<'s> FromPyObject<'s> for AutoVector {
-    fn extract(ob: &'s PyAny) -> PyResult<Self> {
-        if let Ok((x, y)) = <(f32, f32)>::extract(ob) {
-            Ok(AutoVector(Vector2F::new(x, y)))
-        } else {
-            Ok(AutoVector(*Vector::extract(ob)?))
-        }
-    }
-}
+auto!(AutoVector(Vector2F) {
+    (f32, f32) => (x, y) => Vector2F::new(x, y),
+    Vector => v => v.into_inner(),
+});
 
-auto!(AutoScale(Vector2F));
-impl<'s> FromPyObject<'s> for AutoScale {
-    fn extract(ob: &'s PyAny) -> PyResult<Self> {
-        if let Ok((x, y)) = <(f32, f32)>::extract(ob) {
-            Ok(AutoScale(Vector2F::new(x, y)))
-        } else if let Ok(x) = <f32>::extract(ob) {
-            Ok(AutoScale(Vector2F::splat(x)))
-        } else {
-            Ok(AutoScale(*Vector::extract(ob)?))
-        }
-    }
-}
+auto!(AutoScale(Vector2F) {
+    (f32, f32) => (x, y) => Vector2F::new(x, y),
+    f32 => x => Vector2F::splat(x),
+    Vector => v => v.into_inner(),
+});
 
 wrap!(Rect, RectF);
 

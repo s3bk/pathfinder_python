@@ -13,13 +13,7 @@ impl Paint {
     }
 }
 
-auto!(AutoPaint(paint::Paint));
-impl<'s> FromPyObject<'s> for AutoPaint {
-    fn extract(ob: &'s PyAny) -> PyResult<Self> {
-        if let Ok(color) = Color::extract(ob) {
-            Ok(AutoPaint(paint::Paint::from_color(color.color_u())))
-        } else {
-            Ok(AutoPaint(Paint::extract(ob)?.inner))
-        }
-    }
-}
+auto!(AutoPaint(paint::Paint) {
+    Color => color => paint::Paint::from_color(color.color_u()),
+    Paint => paint => paint.into_inner(),
+});

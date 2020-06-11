@@ -15,20 +15,10 @@ use pathfinder_view::{Interactive, Emitter, Context, Config, ElementState, KeyEv
 
 use crate::{Message, Scene, Canvas};
 
-auto!(AutoScene(pa::Scene));
-
-impl<'s> FromPyObject<'s> for AutoScene {
-    fn extract(ob: &'s PyAny) -> PyResult<Self> {
-        if let Ok(canvas) = Canvas::extract(ob) {
-            Ok(AutoScene(canvas.into_inner().into_canvas().into_scene()))
-        } else if let Ok(scene) = Scene::extract(ob) {
-            Ok(AutoScene(scene.into_inner()))
-        } else {
-            Err(value_error!("Canvas or Scene"))
-        }
-    }
-}
-
+auto!(AutoScene(pa::Scene) {
+    Canvas => canvas => canvas.into_inner().into_canvas().into_scene(),
+    Scene => scene => scene.into_inner(),
+});
 
 struct WindowInner {
     sender: Emitter<Message>,
