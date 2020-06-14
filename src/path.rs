@@ -77,6 +77,10 @@ impl Path {
     pub fn add_path(&mut self, path: Path, transform: &Transform) {
         self.inner.add_path(path.inner, &**transform)
     }
+
+    pub fn mirror_and_close_last(&mut self) {
+        self.inner.mirror_and_close_last();
+    }
 }
 #[pyproto]
 impl PyObjectProtocol for Path {

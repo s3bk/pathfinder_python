@@ -1,14 +1,22 @@
+import pathfinder
 from pathfinder import *
 import time
 from math import sin, cos, pi
 
 
 def indicator(len, width):
-    p = Path()
-    p.move_to((0, width/2))
+    p = pathfinder.Path()
     p.arc((0,0), width/2, pi/2, -pi/2, True)
     p.line_to((len, 0))
     p.close()
+    return p
+
+def indicator2(base_r, peak_x, peak_y, length):
+    p = Path()
+    p.arc((0, 0), base_r, pi, pi/2, False)
+    p.bezier_curve_to((base_r, base_r), (peak_x - base_r, 0), (peak_x, peak_y))
+    p.bezier_curve_to((peak_x + base_r, 0), (peak_x + base_r, peak_y/2), (length, 0))
+    p.mirror_and_close_last()
     return p
 
 def circle(r):
@@ -19,7 +27,7 @@ def circle(r):
 
 def tick(len, thickness):
     p = Path()
-    p.rect(Rect((0, -thickness/2), (len, thickness/2)))
+    p.rect(Rect((0, -thickness/2), (len, thickness)))
     return p
 
 color_hour = Color.rgba(0.5, 0, 0.8, 1.0)
@@ -48,25 +56,38 @@ def clock():
         ctx.save()
         ctx.rotate(h / 6 * pi)
         ctx.translate((-19, 0))
-        ctx.fill_path(tick(2, 0.5), "winding")
+        ctx.fill_path(tick(2, 0.2), "winding")
         ctx.restore()
 
     ctx.fill_text("Hello Pathfinder", (0, -5))
 
     (tm_year,tm_mon,tm_mday,tm_hour,tm_min,tm_sec,tm_wday,tm_yday,tm_isdst) = time.localtime()
+
+    ctx.font_size = 6
+    ctx.text_align = "right"
+    ctx.fill_text("{:02}".format(tm_hour), (-1, 10))
+    ctx.text_align = "left"
+    ctx.fill_text("{:02}".format(tm_min), (1, 10))
+    if tm_sec % 2 == 0:
+        ctx.text_align = "center"
+        ctx.fill_text(":", (0, 10))
+
+    ctx.line_width = 0.2
     seconds = tm_sec
     minutes = tm_min + seconds / 60
     hours = tm_hour + minutes / 60
+    
     hands = [
-        (hours * pi / 6, 14, 5, color_hour),
-        (minutes * pi / 30, 16, 4, color_minute),
-        (seconds * pi / 30, 18, 3, color_second)
+        (hours * pi / 6, 14, 3, color_hour),
+        (minutes * pi / 30, 16, 2.5, color_minute),
+        (seconds * pi / 30, 18, 2, color_second)
     ]
     for (angle, len, width, color) in hands:
         ctx.save()
         ctx.fill_style = color
         ctx.rotate(angle - pi/2)
-        ctx.fill_path(indicator(len, width), "winding")
+        p = indicator2(width, 0.4*len, width/2, len)
+        ctx.fill_path(p, "winding")
         ctx.restore()
     
 
