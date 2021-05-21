@@ -1,6 +1,7 @@
 use pyo3::prelude::*;
+use pyo3::types::PyList;
 mod pa {
-    pub use pathfinder_canvas::{Canvas, CanvasRenderingContext2D, Path2D, FillStyle, FillRule, CanvasFontContext, FontCollection};
+    pub use pathfinder_canvas::{Canvas, CanvasRenderingContext2D, Path2D, FillStyle, FillRule, CanvasFontContext, FontCollection, Font};
     pub use pathfinder_geometry::{
         vector::Vector2F,
         rect::RectF,
@@ -13,7 +14,7 @@ mod pa {
 use std::sync::Arc;
 
 wrap!(FontCollection, pa::FontCollection);
-wrap!(Font, Arc<dyn pdf_font::Font + Sync + Send>);
+wrap!(Font, pa::Font);
 auto!(AutoFontCollection(Arc<pa::FontCollection>) {
     Font => font => Arc::new(pa::FontCollection::from_font(font.into_inner())),
     Vec<Font> => fonts => Arc::new(pa::FontCollection::from_fonts(fonts.into_iter().map(|f| f.into_inner()).collect())),
@@ -23,13 +24,13 @@ auto!(AutoFontCollection(Arc<pa::FontCollection>) {
 #[pymethods]
 impl FontCollection {
     #[staticmethod]
-    pub fn from_fonts(fonts: Vec<Font>) -> FontCollection {
+    pub fn from_fonts(fonts: &PyList) -> PyResult<FontCollection> {
         let mut collection = pa::FontCollection::new();
-        for font in fonts {
-            collection.add_font(font.into_inner());
+        for font in fonts.iter() {
+            collection.add_font(font.extract::<Font>()?.into_inner());
         }
 
-        collection.into()
+        Ok(collection.into())
     }
 }
 
@@ -38,7 +39,6 @@ impl Font {
     #[staticmethod]
     pub fn from_file(path: &str) -> PyResult<Font> {
         let data = std::fs::read(path)?;
-        let font = pdf_font::parse(&data);
-        Ok(Font::from(Arc::from(font)))
+        Ok(pa::Font::load(&data).into())
     }
 }

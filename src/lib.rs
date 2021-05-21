@@ -1,11 +1,12 @@
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
+use pyo3::types::PyList;
 use pathfinder_view::{Config};
-
+use std::marker::PhantomData;
 
 macro_rules! value_error {
     ($($t:tt)*) => (
-        pyo3::exceptions::ValueError::py_err(format!($($t)*))
+        pyo3::exceptions::PyValueError::new_err(format!($($t)*))
     )
 }
 
@@ -107,8 +108,8 @@ use path::*;
 mod scene;
 use scene::*;
 
-mod font;
-use font::*;
+//mod font;
+//use font::*;
 
 
 #[pymodule]
@@ -123,34 +124,13 @@ fn pathfinder(py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<Color>()?;
     m.add_class::<Window>()?;
     m.add_class::<Canvas>()?;
-    m.add_class::<Font>()?;
-    m.add_class::<FontCollection>()?;
+//    m.add_class::<Font>()?;
+//    m.add_class::<FontCollection>()?;
     m.add_wrapped(wrap_pyfunction!(show)).unwrap();
     
     Ok(())
 }
 
-/*
-#[pyfunction]
-pub fn show(_py: Python, scene: Scene, zoom: bool, pan: bool, level: &str, background_color: Option<Color>) -> PyResult<Window> {
-    use pathfinder_renderer::gpu::options::{RendererLevel, RendererOptions};
-    let level = match level {
-        "d3d9" => RendererLevel::D3D9,
-        "d3d11" => RendererLevel::D3D11,
-        _ => return Err(value_error!("level must be one of 'd3d9' or 'd3d11'"))
-    };
-    let options = RendererOptions {
-        level,
-        background_color: background_color.map(|c| c.color_f())
-    };
-    Ok(Window::new(scene, Config { zoom, pan, options }))
-}
-*/
-
-#[pyfunction(scene, zoom="true", pan="true", transparent="false", borders="true", background="Color::white()")]
-fn show(_py: Python, scene: AutoScene, zoom: bool, pan: bool, transparent: bool, borders: bool, background: Color) -> PyResult<Window> {
-    Ok(Window::new(scene, Config { zoom, pan, transparent, borders, background: background.color_f() }))
-}
 
 #[derive(Debug)]
 enum Message {

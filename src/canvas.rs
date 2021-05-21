@@ -2,8 +2,8 @@ use pyo3::prelude::*;
 mod pa {
     pub use pathfinder_canvas::{
         Canvas, CanvasRenderingContext2D, Path2D,
-        FillStyle, FillRule, CanvasFontContext, FontCollection,
-        TextAlign, TextBaseline, TextMetrics,
+        FillStyle, FillRule, CanvasFontContext,
+        TextAlign, TextBaseline,
     };
     pub use pathfinder_geometry::{
         vector::Vector2F,
@@ -14,17 +14,22 @@ mod pa {
         outline::ArcDirection,
     };
 }
-use crate::{Rect, Vector, Path, AutoScale, AutoVector, Transform, Color, FontCollection, AutoFontCollection};
+use crate::{Rect, Vector, Path, AutoScale, AutoVector, Transform, Color};
 
 use std::sync::Arc;
 
-wrap!(Canvas, pa::CanvasRenderingContext2D);
+#[pyclass]
+pub struct Canvas {
+    inner: pa::CanvasRenderingContext2D
+}
 
 #[pymethods]
 impl Canvas {
     #[new]
     pub fn new(size: AutoVector) -> Canvas {
-        pa::Canvas::new(*size).get_context_2d(pa::CanvasFontContext::new(Arc::new(pa::FontCollection::new()))).into()
+        Canvas {
+            inner: pa::Canvas::new(*size).get_context_2d(pa::CanvasFontContext::from_system_source())
+        }
     }
 
     pub fn save(&mut self) {
@@ -183,6 +188,7 @@ impl Canvas {
     }
 }
 
+/*
 // Text
 #[pymethods]
 impl Canvas {
@@ -224,6 +230,7 @@ impl Canvas {
         Ok(())
     }
 }
+*/
 
 auto!(AutoFillStyle(pa::FillStyle));
 impl<'s> FromPyObject<'s> for AutoFillStyle {

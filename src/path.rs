@@ -68,18 +68,19 @@ impl Path {
         self.inner.rect(*rect);
     }
 
+    #[text_signature = "($self, center: Vector, axes: Vector, rotation: float, start_angle: float, end_angle: float, clockwise: bool)"]
+    pub fn ellipse(&mut self, center: AutoVector, axes: AutoVector, rotation: f32) {
+        self.inner.ellipse(*center, *axes, rotation, 0.0, 2.0 * std::f32::consts::PI);
+    }
+
     #[text_signature = "($self, center: Vector, axes: Vector, rotation: float, start_angle: float, end_angle: float)"]
-    pub fn ellipse(&mut self, center: AutoVector, axes: AutoVector, rotation: f32, start_angle: f32, end_angle: f32) {
+    pub fn ellipse_section(&mut self, center: AutoVector, axes: AutoVector, rotation: f32, start_angle: f32, end_angle: f32) {
         self.inner.ellipse(*center, *axes, rotation, start_angle, end_angle);
     }
 
     #[text_signature = "($self, rect: Rect, transform: Transform)"]
     pub fn add_path(&mut self, path: Path, transform: &Transform) {
         self.inner.add_path(path.inner, &**transform)
-    }
-
-    pub fn mirror_and_close_last(&mut self) {
-        self.inner.mirror_and_close_last();
     }
 }
 #[pyproto]
